@@ -1,0 +1,65 @@
+<button class="btn btn-default" (click)="closeReport()">Close</button>
+<br />
+<br />
+<table class="table table-bordered table-responsive" 
+      *ngIf="(reportObj.metadata.totalRecords > 0)" 
+      style="margin-bottom: 0px !important">
+  <thead>
+    <tr>
+      <th class="col-sm-{{column.width}}" *ngFor="let column of reportObj.metadata.columns">{{column.headerText}}</th>
+    </tr>
+  </thead>
+
+
+  <tbody>
+    <ng-container *ngFor="let row of reportObj.dataSource">
+      
+      <ng-container *ngIf="reportObj.metadata.collection">
+        <tr (click)="row.containerDataSource = rowClicked(row)" style="cursor: pointer">
+          <ng-container *ngFor="let data of row.data">
+              <td *ngIf="row.expanded"><b>{{ data }}</b></td>
+              <td *ngIf="!row.expanded">{{ data }}</td>
+          </ng-container>
+        </tr>
+        <tr *ngIf="row.expanded">
+          <td colspan="4" style="padding-left: 20px">
+            <!--start-->
+            <ng-container *ngIf="row.containerDataSource != null">
+              <table class="table table-bordered table-hover table-responsive" *ngIf="(row.containerDataSource.metadata.totalRecords > 0)" >
+                <thead>
+                  <tr>
+                    <th class="col-sm-{{column.width}}" *ngFor="let column of row.containerDataSource.metadata.columns">
+                      {{column.headerText}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of row.containerDataSource.dataSource">
+                    <td *ngFor="let cell of row" >{{ cell }}</td>
+                  </tr>
+                  <tr *ngIf="row.containerDataSource.metadata.outputRow != null">
+                    <td *ngFor="let cell of row.containerDataSource.metadata.outputRow" ><b>{{ cell }}</b></td>
+                  </tr>
+                  <tr><td colspan="4"></td>
+                </tbody>
+              </table>
+            </ng-container>
+            <!--end-->
+
+          </td>
+        </tr>
+        <tr *ngIf="row.expanded"><td colspan="4"></td></tr>
+      </ng-container>
+
+      <ng-container *ngIf="!reportObj.metadata.collection">
+        <tr>
+            <td *ngFor="let data of row.data">{{ data }}</td>
+        </tr>
+      </ng-container>
+    </ng-container>
+    <tr *ngIf="reportObj.metadata.outputRow != null">
+      <td *ngFor="let cell of reportObj.metadata.outputRow" ><b>{{ cell }}</b></td>
+    </tr>
+  </tbody>
+</table>
+

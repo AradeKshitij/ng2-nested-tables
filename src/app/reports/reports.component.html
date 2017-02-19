@@ -1,0 +1,81 @@
+<div *ngIf="loading == true" class="loading-dialog"></div>
+<div class="container success-message-container">
+    <div class="alert alert-success api-success-message" *ngIf="apiSuccessFlag">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a> {{apiSuccessMsg}}
+    </div>
+    <div class="alert alert-danger api-error-message" *ngIf="apiErrorFlag">
+        <a class="close" data-dismiss="alert" aria-label="close">&times;</a> {{apiErrorMsg}}
+    </div>
+</div>
+
+<div class="container submit-request-container">
+  
+  <div class="panel panel-default" *ngIf="!inReportView">
+    <div class="panel-heading"><strong>Generate Reports</strong></div>
+    <div class="panel-body">
+
+        <form [formGroup]="reportForm" (ngSubmit)="generateReport()" autocomplete="off" novalidate>
+          
+          <table class="table-stripped">
+            <tr>
+              <td class="row-header">Select Report:<font color="red">*</font></td>
+              <td>
+                <div class="report-form-fields">
+                  <select id="rtype" name="reportType" formControlName="reportType" [(ngModel)]="reportRequestObj.category" class="form-control">
+                    <option></option>
+                    <option value="{{type}}" *ngFor="let type of reportTypes">{{type}}</option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Start Date:<font color="red">*</font></td>
+              <td>
+                <div class="report-form-fields">
+                  <input formControlName="fromDate" 
+                    class="form-control report-date" 
+                    ng2-datetime-picker close-on-select="true"
+                    date-only="true" 
+                    id="fromDate" 
+                    [(ngModel)]="reportRequestObj.fromDate" 
+                    placeholder="Select Start Date"/>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>End Date:<font color="red">*</font></td>
+              <td>
+                <div class="report-form-fields">
+                  <input formControlName="toDate" 
+                    class="form-control report-date" 
+                    ng2-datetime-picker close-on-select="true"
+                    date-only="true" 
+                    id="toDate" 
+                    [(ngModel)]="reportRequestObj.toDate" 
+                    placeholder="Select End Date"/>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <button type="submit" class="btn btn-secondary" [disabled]="reportForm.invalid">Generate</button>
+                <button type="reset" class="btn btn-secondary" (click)="reportForm.reset">Reset</button>
+              </td>
+            </tr>
+          </table>
+
+        </form>
+
+    </div>
+  </div>
+  
+  <div class="panel panel-default" *ngIf="inReportView">
+    <div class="panel-heading"><b>{{reportObj.metadata.title}}</b></div>
+    <div class="panel-body">
+      <ae-report [reportObj]="reportObj" (closeReportView)="closeReport($event)"></ae-report>
+    </div>
+  </div>
+
+
+</div>
